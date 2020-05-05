@@ -14,7 +14,7 @@ Network details:
 - epochs : 10
 
 
-Validation Loss : 0.95 (average of 5folds)
+Validation Loss : 0.095 (average of 5folds)
 
 
 Achieved Public and Private score : 0.08817 (Log Loss)
