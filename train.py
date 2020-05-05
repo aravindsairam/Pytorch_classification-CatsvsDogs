@@ -47,31 +47,29 @@ def main():
     valloader = torch.utils.data.DataLoader(val_data, batch_size = BATCH_SIZE,
                                          shuffle  = False, num_workers = 0)
     
+    print("number of training samples =",len(train_data))
+    print("number of validation samples =",len(val_data))
+    
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor = 0.1, patience=2, verbose=True)
     criterion = nn.BCELoss()
     
     for epoch in range(EPOCHS):
         print(f"At epoch {epoch+1}:")
         for phase in ['train', 'val']:
             running_loss = 0.0
-            auc = 0.0
             if phase == 'train': 
                 model.train()
                 loader = trainloader
             else:
                 model.eval()
                 loader = valloader
-            count = 0
             for data in loader:
-                count +=1
                 inputs  = data["images"].to(DEVICE)
                 labels = data["targets"].to(DEVICE)
                 outputs = model(inputs)
                 labels = labels.type_as(outputs)
                 loss = criterion(outputs, labels)
-                auc += clf_met(metric = "auc", 
-                               y_true = labels.cpu().numpy(), 
-                               y_proba = outputs.cpu().detach().numpy())
                 if phase == 'train':
                     optimizer.zero_grad()
                     loss.backward()
@@ -79,11 +77,10 @@ def main():
                 running_loss += loss.item() * labels.size(0)
             if phase == 'train':
                 epoch_loss = running_loss/len(train_data)
-                epoch_auc = auc/count
             else:
                 epoch_loss = running_loss/len(val_data)
-                epoch_auc = auc/count
-            print(f"{phase}:\nLoss = {epoch_loss}\tAUC={epoch_auc}")
+            print(f"{phase}:\nLoss = {epoch_loss}")
+        scheduler.step(epoch_loss)
         torch.save({
             'epoch': epoch,
             'model_state_dict': model.state_dict(),

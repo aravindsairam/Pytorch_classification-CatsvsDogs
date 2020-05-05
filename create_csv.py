@@ -4,7 +4,7 @@ import os
 #dog = 1, cat = 0
 
 #wrong or mislabelled images
-wrong_df = pd.read_csv('wrong_label.csv')
+wrong_df = pd.read_csv('datasets/wrong_label.csv')
 
 
 wrong_df['filename'] = wrong_df['filename']+'.jpg'
