@@ -3,7 +3,7 @@ Classification of Cats and Dogs with Pytorch
 
 This is the code for Kaggle's Dogs vs. Cats Redux competition. 
 
-Training dataset = 25,000 images
+Training dataset = 25,000 images and 
 Testing dataset = 12,500 images
 
 Network details:
@@ -12,9 +12,10 @@ Network details:
 - Optimizer : Adam
 - Batch size : 64
 - epochs : 10
+- augmentations : random horizontal flip, shift, scale and rotate. 
 
 
-Validation Loss : 0.095 (average of 5folds)
+Validation Loss : 0.095 (average of 5folds).
 
 
-Achieved Public and Private score : 0.08817 (Log Loss)
+Achieved Public and Private score : 0.06599 Log Loss (mean ensemble of 5 models)
