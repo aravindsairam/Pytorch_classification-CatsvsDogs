@@ -13,6 +13,7 @@ Network details:
 - Batch size : 64
 - epochs : 10
 - augmentations : random horizontal flip, shift, scale and rotate. 
+- Removes 51 wrong/incorrect images from train set which are not cats nor dogs (or both cats and dogs together).
 
 
 Validation Loss : 0.095 (average of 5folds).
