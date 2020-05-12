@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 
 # Dataset
-datasets
+datasets/train
+datasets/test

@@ -22,43 +22,49 @@ LEARNING_RATE = os.environ.get("EPOCHS")
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+def set_parameter_requires_grad(model, feature_extracting):
+        if feature_extracting:
+            for param in model.parameters():
+                param.requires_grad = False
+
 def main():
-    
+
     model = MODELS_DISPATCH[MODEL](pretrain = True)
-    
-    
+
+    set_parameter_requires_grad(model, feature_extracting = True)
+
     model.to(DEVICE)
-    
+
     train_data = catsvsdogsTrain(folds = TRAIN_FOLDS,
                               img_height = IMG_HEIGHT,
                               img_width = IMG_WIDTH,
                               mean= MODEL_MEAN,
                               std = MODEL_STD)
-    
+
     trainloader = torch.utils.data.DataLoader(train_data, batch_size = BATCH_SIZE,
                                          shuffle  = True, num_workers = 0)
-    
+
     val_data = catsvsdogsTrain(folds = VAL_FOLDS,
                               img_height = IMG_HEIGHT,
                               img_width = IMG_WIDTH,
                               mean= MODEL_MEAN,
                               std = MODEL_STD)
-    
+
     valloader = torch.utils.data.DataLoader(val_data, batch_size = BATCH_SIZE,
                                          shuffle  = False, num_workers = 0)
-    
+
     print("number of training samples =",len(train_data))
     print("number of validation samples =",len(val_data))
-    
+
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor = 0.1, patience=2, verbose=True)
     criterion = nn.BCELoss()
-    
+
     for epoch in range(EPOCHS):
         print(f"At epoch {epoch+1}:")
         for phase in ['train', 'val']:
             running_loss = 0.0
-            if phase == 'train': 
+            if phase == 'train':
                 model.train()
                 loader = trainloader
             else:
@@ -85,8 +91,9 @@ def main():
             'epoch': epoch,
             'model_state_dict': model.state_dict(),
             'optimizer_state_dict': optimizer.state_dict(),
-            'loss': loss,
+            'loss': epoch_loss,
             }, f'model/{MODEL}_{VAL_FOLDS[0]}.pth')
         print("-*-"*20)
     print('Finished Training')
 main()
+

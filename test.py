@@ -52,7 +52,7 @@ testloader = torch.utils.data.DataLoader(test_data, batch_size = BATCH_SIZE,
 
 
 
-PATH = "model/resnet34_4.pth"
+PATH = "model/resnet34_0.pth"
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = MODELS_DISPATCH[MODEL](pretrain = True)
@@ -77,4 +77,4 @@ df = pd.DataFrame({"id":files_list, 'label':result_array})
 df["id"] = df["id"].str.split(".").str[0]
 df["id"] = df["id"].astype(int)
 sort_df = df.sort_values(by=['id'], ignore_index= True)
-sort_df.to_csv("/content/submission_new_val1.csv", index=False)
+sort_df.to_csv("submissions/submission__val_0.csv", index=False)
